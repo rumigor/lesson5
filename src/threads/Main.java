@@ -31,8 +31,6 @@ public class Main {
         System.arraycopy(arr, H, arr2, 0, H); //создаем массив второй половины
         System.out.println("Время затраченное на разбиение массива надвое: " + (System.currentTimeMillis() - c));
         //Вычисляем:
-        long thread1 = System.currentTimeMillis();
-        long thread2 = System.currentTimeMillis();
         Thread t1 = new Thread(() -> {
             oneThreadFilling(arr1, 0);
             });
