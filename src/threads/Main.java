@@ -34,10 +34,10 @@ public class Main {
         long thread1 = System.currentTimeMillis();
         long thread2 = System.currentTimeMillis();
         Thread t1 = new Thread(() -> {
-            Main.oneThreadFilling(arr1, 0);
+            oneThreadFilling(arr1, 0);
             });
         Thread t2 = new Thread(() -> {
-            Main.oneThreadFilling(arr2, H);
+            oneThreadFilling(arr2, H);
         });
         t1.start();
         t2.start();
