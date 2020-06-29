@@ -9,18 +9,18 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         float[] arr = new float[SIZE];
         Arrays.fill(arr,1); //заполняем массив единицами
-        long a = System.currentTimeMillis();
-        oneThreadFilling(arr); //вычисляем значения и заполняем массив в одном потоке
-        System.out.println("Время подсчета первым методом: " + (System.currentTimeMillis() - a));
+        oneThreadFilling(arr, 0); //вычисляем значения и заполняем массив в одном потоке
         Arrays.fill(arr,1); //заполняем массив единицами
         long b = System.currentTimeMillis();
         twoThreadsFilling(arr); //вычисляем значения и заполняем массив в двух потоках
         System.out.println("Общее время подсчета вторым методом: " + (System.currentTimeMillis() - b));
     }
-    public static void oneThreadFilling(float [] a){
-        for (int i = 0; i < a.length; i++) {
-            a[i] = (float)(a[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+    public static void oneThreadFilling(float [] array, int h){
+        long a = System.currentTimeMillis();
+        for (int i = h; i < array.length+h; i++) {
+            array[i-h] = (float)(array[i-h] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
         }
+        System.out.println("Время вычислений и заполнения массива в потоке " + Thread.currentThread().getName() + ": " + (System.currentTimeMillis() - a));;
     }
 
     public static void twoThreadsFilling(float [] arr) throws InterruptedException {
@@ -31,15 +31,13 @@ public class Main {
         System.arraycopy(arr, H, arr2, 0, H); //создаем массив второй половины
         System.out.println("Время затраченное на разбиение массива надвое: " + (System.currentTimeMillis() - c));
         //Вычисляем:
+        long thread1 = System.currentTimeMillis();
+        long thread2 = System.currentTimeMillis();
         Thread t1 = new Thread(() -> {
-            for (int i = 0; i < arr1.length; i++) {
-                arr1[i] = (float)(arr1[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
-            }
+            Main.oneThreadFilling(arr1, 0);
             });
         Thread t2 = new Thread(() -> {
-            for (int i = H; i < arr2.length+H; i++) {
-                arr2[i-H] = (float)(arr2[i-H] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
-            }
+            Main.oneThreadFilling(arr2, H);
         });
         t1.start();
         t2.start();
