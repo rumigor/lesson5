@@ -30,11 +30,20 @@ public class Main {
         System.arraycopy(arr, 0, arr1, 0, H); //создаем массив первой половины
         System.arraycopy(arr, H, arr2, 0, H); //создаем массив второй половины
         System.out.println("Время затраченное на разбиение массива надвое: " + (System.currentTimeMillis() - c));
-        ArrayFilling thread1 = new ArrayFilling(arr1, 0); //создаем первый поток для первой половины массива
-        ArrayFilling thread2 = new ArrayFilling(arr2, H); //создаем второй поток для второй половины массива
-        thread1.start();
-        thread2.start();
-        thread2.join(); //ждем окончание вычислений во втором потоке
+        //Вычисляем:
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < arr1.length; i++) {
+                arr1[i] = (float)(arr1[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+            }
+            });
+        Thread t2 = new Thread(() -> {
+            for (int i = H; i < arr2.length+H; i++) {
+                arr2[i-H] = (float)(arr2[i-H] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+            }
+        });
+        t1.start();
+        t2.start();
+        t2.join(); //ждем окончание вычислений во втором потоке
         long d = System.currentTimeMillis();
         System.arraycopy(arr1, 0, arr, 0, H);
         System.arraycopy(arr2, 0, arr, H, H);
